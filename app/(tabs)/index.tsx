@@ -1,52 +1,66 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useCharacters } from '@/lib/rick-and-morty-api';
+import { Character } from '@/components/CharacterCard';
+import ThemedButton from '@/components/ThemedButton';
+import { useFavorites } from '@/lib/favorite-characters';
+import { TextInput } from 'react-native';
+import { useState } from 'react';
 
 export default function HomeScreen() {
+  const [filter, setFilter] = useState('');
+
+  const characters = useCharacters(filter);
+
+  const { isFavorite } = useFavorites();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <>
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+        headerImage={
+          <Image
+            source={require('@/assets/images/partial-react-logo.png')}
+            style={styles.headerImg}
+          />
+        }>
+
+        <TextInput
+          value={filter}
+          onChangeText={setFilter}
+          placeholder="Filter"
+          style={styles.input}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Characters</ThemedText>
+          <HelloWave />
+        </ThemedView>
+
+        {characters.loading && <ThemedText>Loading...</ThemedText>}
+
+        {characters.data && 
+          <>
+            <ThemedView style={styles.stepContainer}>
+              {characters.data?.results.map(character => (
+                <Character key={character.id} character={character} isFavorite={isFavorite(character.id)} />
+              ))}
+            </ThemedView>
+          </>
+        }
+
+      </ParallaxScrollView>
+      {/* This should really use safe area inset form what I remember */}
+      <ThemedView style={styles.buttonContainer}>
+        <ThemedButton title="Prev page" onPress={characters.prevPage} disabled={!characters.hasPrevPage} />
+        <ThemedText>Page {characters.page} / {characters.totalPageCount}</ThemedText>
+        <ThemedButton title="Next page" onPress={characters.nextPage} disabled={!characters.hasNextPage} />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    </>
   );
 }
 
@@ -57,14 +71,36 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepContainer: {
-    gap: 8,
+    gap: 25,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
+  headerImg: {
     bottom: 0,
+    right: 0,
     left: 0,
+    top: 0,
     position: 'absolute',
+    width: undefined,
+    height: undefined,
   },
+  button: {
+    // TODO: make this support dark mode
+    backgroundColor: "#000",
+    color: "#fff"
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 32,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.2)',
+    padding: 8,
+    borderRadius: 4,
+  }
 });
