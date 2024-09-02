@@ -46,7 +46,7 @@ export default function HomeScreen() {
 
         {characters.loading && <ThemedText>Loading...</ThemedText>}
 
-        {characters.data && 
+        {characters.data?.length ?
           <>
             <ThemedView style={styles.stepContainer}>
               {characters.data?.results.map(character => (
@@ -54,7 +54,7 @@ export default function HomeScreen() {
               ))}
             </ThemedView>
           </>
-        }
+        : <ThemedText>No results. Try another search term.</ThemedText>}
 
       </ParallaxScrollView>
       <ThemedView style={[styles.buttonContainer, { paddingBottom: insets.bottom + 16 }]}>
