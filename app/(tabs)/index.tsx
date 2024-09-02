@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from 'react-native';
+import { SafeAreaView, Image, StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -57,10 +57,9 @@ export default function HomeScreen() {
         }
 
       </ParallaxScrollView>
-      {/* This should really use safe area inset form what I remember */}
       <ThemedView style={[styles.buttonContainer, { paddingBottom: insets.bottom + 16 }]}>
         <ThemedButton title="Prev page" onPress={characters.prevPage} disabled={!characters.hasPrevPage} />
-        <ThemedText>Page {characters.page} / {characters.totalPageCount}</ThemedText>
+        <ThemedText>Viewing: {characters.page} of {characters.totalPageCount}</ThemedText>
         <ThemedButton title="Next page" onPress={characters.nextPage} disabled={!characters.hasNextPage} />
       </ThemedView>
     </>
@@ -95,10 +94,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 32,
+    paddingHorizontal: 32,
     paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    gap: 8,
   },
   input: {
     borderWidth: 1,
