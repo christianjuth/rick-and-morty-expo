@@ -4,7 +4,6 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { Image, StyleSheet } from 'react-native';
 
-
 import { useCharacter} from '@/lib/rick-and-morty-api'
 import Button from '@/components/ThemedButton';
 import { useFavorites } from '@/lib/favorite-characters';

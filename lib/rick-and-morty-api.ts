@@ -20,6 +20,7 @@ export function useCharacters(search?: string) {
   const [page, setPage] = useState(1)
   const [totalPageCount, setTotalPageCount] = useState(1)
 
+  // TODO: debounce this
   const fetched = useFetch<{ results: Character[]; info: { pages: number } }>(`https://rickandmortyapi.com/api/character?page=${page}&name=${search}`)
 
   useEffect(() => {
