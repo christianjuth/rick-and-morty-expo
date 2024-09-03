@@ -8,10 +8,13 @@ import { useCharacters } from '@/lib/rick-and-morty-api';
 import { Character } from '@/components/CharacterCard';
 import ThemedButton from '@/components/ThemedButton';
 import { useFavorites } from '@/lib/favorite-characters';
+import { useSafeArea } from 'react-native-safe-area-context'
 import { TextInput } from 'react-native';
 import { useState } from 'react';
 
 export default function HomeScreen() {
+  const insets = useSafeArea();
+
   const [filter, setFilter] = useState('');
 
   const characters = useCharacters(filter);
@@ -55,7 +58,7 @@ export default function HomeScreen() {
 
       </ParallaxScrollView>
       {/* This should really use safe area inset form what I remember */}
-      <ThemedView style={styles.buttonContainer}>
+      <ThemedView style={[styles.buttonContainer, { paddingBottom: insets.bottom + 16 }]}>
         <ThemedButton title="Prev page" onPress={characters.prevPage} disabled={!characters.hasPrevPage} />
         <ThemedText>Page {characters.page} / {characters.totalPageCount}</ThemedText>
         <ThemedButton title="Next page" onPress={characters.nextPage} disabled={!characters.hasNextPage} />
